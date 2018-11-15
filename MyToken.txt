@@ -1,0 +1,34 @@
+/*
+ Contract Design By Sony
+*/
+
+pragma solidity ^0.4.21;
+
+contract Token {  // 合約名稱
+    string public symbol = "NUU"; // 代幣代號
+    string public name = "SonyToken"; // 代幣名稱
+    uint256 public _TotalSupply; // 代幣總發行量
+
+    mapping (address => uint256) private balances; // balances 定義了一個名為 balances 的 Mapping，此 Mapping 用以儲存每個地址對應的 Token 數量，可以想像說記錄「A 地址上對應了 100 顆 Token」
+    
+    function getBalance(address _account) public constant returns (uint256) { // 抓取地址的餘額函數
+        return balances[_account];
+    }
+
+
+    function Token(uint256 _initialSupply) public { // 佈署合約前要發行多少貨幣
+        _TotalSupply = _initialSupply; // 發行量變數設定到總發行量
+        balances[msg.sender] = _initialSupply; // 令新發行的幣歸戶到合約擁有者
+    }
+
+    function transfer(address _to, uint256 _value) public { // 金錢轉移函數
+        require(msg.sender != _to); // 防止發送者=接收者
+        require(balances[msg.sender] >= _value); // 發送者的餘額必須大於等於給的人錢
+        require(balances[_to] + _value >= balances[_to]);   // 避免Overflow
+        balances[msg.sender] -= _value;
+        balances[_to] += _value;
+    }
+}
+
+
+// 11/13 Deployed Contract Address: 0xda713eea005a5f94c941458225e3fc01893ec922
